@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js">
+
+    </script>
+    <style>
+        /*
+YUI 3.18.1 (build f7e7bcb)
+Copyright 2014 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
+
+        html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal}ol,ul{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:text-top}sub{vertical-align:text-bottom}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;*font-size:100%}legend{color:#000}#yui3-css-stamp.cssreset{display:none}
+        .box{
+            width: 800px;
+            height: 600px;
+            background-color: red;
+            margin: 0 auto;
+            margin-top: 100px;
+            position: relative;
+            text-align: center;
+            border-radius: 5px 0px 0px 5px;
+            box-shadow: 0px 0px 5px #d9d9d9;
+            overflow: hidden;
+        }
+        video{
+            background-color: #fff;
+            position: absolute;
+            height: 500px;
+            width: 100%;
+            top: 50%;
+            left: 50%;
+            margin-top: -250px;
+            margin-left:-50%;
+        }
+
+        .box span{
+            position: absolute;
+            width:auto;
+            top: 10px;
+            left: 20px;
+            /*display: inline;*/
+            /*color: #000000;*/
+            overflow: hidden;
+        }
+
+        .con{
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            opacity: 0.5;
+        }
+
+        .con:hover{
+            opacity: 1;
+        }
+
+        .con input{
+            border-radius: 5px 0px 0px 5px;
+            box-shadow: 0px 0px 5px #d9d9d9;
+        }
+
+        .con:hover{
+            opacity: 1;
+        }
+        .con input[type="text"]{
+            width: 300px;
+            height: 30px;
+        }
+
+        .con input[type="button"]{
+            width: 60px;
+            height: 30px;
+            }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div>
+            <video src="sinaimg.mp4" controls = "true" class="vdo"></video>
+        </div>
+        <div class="con">
+            <input type="text" placeholder="请输入弹幕" class="context"><input type="button" value="发送" class="btn">
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    var oCon = document.querySelector(".context");
+    var oBox = document.querySelector(".box");
+    var oBtn = document.querySelector(".btn");
+    var ovdo = document.querySelector(".vdo")
+    var cW = oBox.offsetWidth;//获取box宽度
+    var cH = ovdo.offsetHeight;//获取box高度
+    var message = "";//初始化弹幕内容
+    //获取相关dom元素
+
+    oBtn.onclick = send;
+    oCon.onkeydown = function (e) {
+        if (e.keyCode === 13){
+            send();
+        }
+    }
+
+    function send() {
+        if (oCon.value.length <= 0 || (/^\s+$/).test(oCon.value)){
+            alert("请输入弹幕内容");
+            return false;
+        }
+            message = oCon.value;
+        createEle(message);
+        oCon.value = "";//清空输入框
+    }
+
+    function createEle(txt) {//动态创建span标签
+        var oMessage = document.createElement("span");
+        oMessage.innerHTML = txt;
+        oMessage.style.left = cW + "px";
+        oBox.appendChild(oMessage);
+        roll.call(oMessage , {
+            timing: ['linear','ease-out'][~~(Math.random()*2)]//随机确定滚动曲线
+            ,color: '#' + (~~(Math.random()*(1<<24))).toString(16)
+            ,top: rondom(ovdo.offsetTop,cH)
+            ,fontSize:rondom(16,32)
+        });//call改变函数内部this指向
+//        console.log(['linear','ease-out'][~~(Math.random()*2)]);
+//        console.log('#' + (~~(Math.random()*(1<<24))).toString(16))
+//        console.log(rondom(16,32));
+    }
+
+    function roll(opt) {//设置定时函数
+        opt.timing = opt.timing || 'linear';
+        opt.color = opt.color || '#fff';
+        opt.top = opt.top || 0;
+        opt.fontSize = opt.fontSize|| 16;
+        this._left = parseInt(this.offsetLeft);//获取当前left值
+        this.style.color = opt.color;//初始化颜色
+        this.style.fontSize = opt.fontSize + 'px';//初始化字体大小
+        this.style.top = opt.top + 'px';//初始化高度
+//        console.log(this._left);
+//        console.log(opt.timing)
+        this.timer = setInterval(function () {
+            switch (opt.timing){
+                case 'linear' ://如果匀速
+                    this._left += -2;
+                    break;
+                case 'ease-out' ://如果是先快后慢
+                    this._left += (0 - this._left) * .01;
+                    break;
+            }
+            if (this._left <= 10){
+                clearInterval(this.timer);
+                this.parentNode.removeChild(this);
+                return;//终止函数
+            }
+            this.style.left = this._left -1 +"px";}.bind(this),1000/60)
+    }
+    function rondom(start,end) {
+        return start + ~~(Math.random() * (end-start));
+    }
+</script>
+</html>
