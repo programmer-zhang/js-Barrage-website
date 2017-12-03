@@ -1,4 +1,4 @@
-# -web-
+# javascript-Barrage website
 需求分析
    用户点击发送按钮 把input的内容展示到box里面
    1.元素 .con .send-btn .box span（创建）
